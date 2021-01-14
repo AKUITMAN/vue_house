@@ -3,17 +3,50 @@
     <div class="head">
       <div class="border">
           <div class="first">
-            <template>
+
+            <!--<template>
               <el-button type="text" @click="login">登录</el-button>
-            </template>
-            <template>
+            </template>-->
+            <el-popover
+              placement="bottom"
+              width="400"
+              trigger="click">
+              <div style="height: 300px" :modal="formLabelAlign">
+              <h2 style="width: 300px;height: 40px;float: left;color: black">邮箱快捷登录</h2>
+              <div style="width: 300px;height: 40px;float: left;color: #AAA;font-size: 14px">别担心，无账号自动注册不会导致手机号被泄露</div>
+              <div style="width: 300px;height: 40px;float: left; margin-top: 10px;margin-left: 45px">邮箱：<input  placeholder="请输入邮箱" style="width: 250px;height: 40px" v-model="user.email"></div>
+              <div style="width: 300px;height: 40px;float: left; margin-top: 10px;margin-left: 45px">密码：<input  placeholder="请输入密码" ype="password" style="width: 250px;height: 40px" v-model="user.password"></div>
+              <div style="height: 30px;width: 200px">
+                <button style="width: 390px;height: 40px;background-color: green;margin-top: 17px;" type="primmary" @click="login()">登录</button>
+              </div>
+              </div>
+              <el-button slot="reference" type="text">登录</el-button>
+          </el-popover>
+            <el-popover
+              placement="bottom"
+              width="400"
+              trigger="click">
+              <div style="height: 300px">
+              <h2 style="width: 300px;height: 40px;float: left;margin-top: -0px;color: black">邮箱注册</h2>
+              <div style="width: 300px;height: 40px;float: left;margin-top: -25px;color: #AAA;font-size: 14px">别担心，无账号自动注册不会导致手机号被泄露</div>
+              <div style="width: 300px;height: 40px;float: left; margin-top: 10px;margin-left: 45px;">昵称：<input  placeholder="请输入昵称" style="width: 250px;height: 40px" v-model="user.userName"></div>
+              <div style="width: 300px;height: 40px;float: left; margin-top: 10px;margin-left: 45px">邮箱：<input  placeholder="请输入邮箱" style="width: 250px;height: 40px" v-model="user.email"></div>
+              <div style="width: 300px;height: 40px;float: left; margin-top: 10px;margin-left: 45px">密码：<input  placeholder="请输入密码" ype="password" style="width: 250px;height: 40px" v-model="user.password"></div>
+              <div style="height: 30px;width: 300px">
+                <button style="width: 390px;height: 40px;background-color: green;margin-top: 20px;" @click="registe()">注册</button>
+              </div>
+              </div>
+              <el-button slot="reference" type="text">立即注册</el-button>
+            </el-popover>
+
+            <!--<template>
               <el-button type="text" @click="registe">立即注册</el-button>
-            </template>
+            </template>-->
            </div>
         <div class="second">
-          <a href="http://localhost:8080/#/" style="text-decoration: none;color: white"><div class="sfirst"></div></a>
+          <a href="http://10.12.154.48:8080/#/" style="text-decoration: none;color: white"><div class="sfirst"></div></a>
           <div style="background: rgba(0,0,0,0.25);display: inline-block;height: 27px;line-height: 27px;text-align: center;color: #fff;margin-top: 12px;
-                      cursor: pointer;border-radius: 15px;padding: 0 10px;font-size: 12px;float: left" ><a href="http://localhost:8080/#/city" style="text-decoration: none;color: white">西安</a> </div>
+                      cursor: pointer;border-radius: 15px;padding: 0 10px;font-size: 12px;float: left" ><a href="http://10.12.154.48:8080/#/city" style="text-decoration: none;color: white">西安</a> </div>
           <div class="ssecond"><strong>
             二手房&nbsp&nbsp
             新房&nbsp&nbsp
@@ -252,6 +285,7 @@
    /* export default {
         name: "HomePage"
     }*/
+   import axios from 'axios';
    export default {
      name: "HomePage",
      data() {
@@ -270,6 +304,12 @@
 
          ],
 
+           user:{
+            userName:'',
+             email:'',
+             password:'',
+           },
+
          restaurants: [],
          state: '',
          timeout: null,
@@ -285,6 +325,34 @@
            {"value": "泷千家(天山西路店)", "address": "天山西路438号"},
            {"value": "胖仙女纸杯蛋糕（上海凌空店）", "address": "上海市长宁区金钟路968号1幢18号楼一层商铺18-101"}
          ];
+       },
+
+       login: function () {
+         axios.post("http://10.12.154.50:7000/house-user/user/login", this.user).then(res => {
+           if (res.data.code == 200) {
+             alert(res.data.message)
+             //将返回的token设置的前端的cookie中
+             this.$cookie.set("token", res.data.data);
+             //设置完成跳转首页
+             this.$router.push("/")
+           }
+           else{
+             alert(res.data.message)
+           }
+         })
+       },
+       registe: function () {
+         axios.post("http://10.12.154.50:7000/house-user/user/registry", this.user).then(res => {
+           if (res.data.code == 200) {
+             alert(res.data.message)
+             //将返回的token设置的前端的cookie中
+             this.$cookie.set("token", res.data.data);
+             //设置完成跳转首页
+           }
+           else {
+             alert(res.data.message)
+           }
+         })
        },
        querySearchAsync(queryString, cb) {
          var restaurants = this.restaurants;
@@ -302,57 +370,26 @@
        },
        handleSelect(item) {
          console.log(item);
+       },
+       handleAvatarSuccess(res, file) {
+         this.imageUrl = URL.createObjectURL(file.raw);
+       },
+       beforeAvatarUpload(file) {
+         const isJPG = file.type === 'image/jpeg';
+         const isLt2M = file.size / 1024 / 1024 < 2;
+
+         if (!isJPG) {
+           this.$message.error('上传头像图片只能是 JPG 格式!');
+         }
+         if (!isLt2M) {
+           this.$message.error('上传头像图片大小不能超过 2MB!');
+         }
+         return isJPG && isLt2M;
        }
      },
      mounted() {
        this.restaurants = this.loadAll();
      },
-
-
-     methods: {
-       login() {
-         this.$alert('<div style="height: 150px">' +
-           '<h2 style="width: 300px;height: 40px;float: left;margin-top: -25px;color: black">邮箱快捷登录</h2>' +
-           '<div style="width: 300px;height: 40px;float: left;margin-top: -25px;color: #AAA;font-size: 14px">别担心，无账号自动注册不会导致手机号被泄露</div>' +
-           '<input  placeholder="请输入邮箱" style="width: 390px;height: 40px">' +
-           '<input  placeholder="请输入密码" type="password" style="width: 390px;height: 40px;margin-top: 2px">' +
-           '<div style="height: 30px;width: 300px">' +
-           '<button style="width: 390px;height: 40px;background-color: green;margin-top: 26px;">登录</button>' +
-
-           '</div>' +
-           '</input>' +
-           '</div>', {
-           dangerouslyUseHTMLString: true
-         });
-       },
-
-       registe() {
-         /*this.$prompt('请输入邮箱', '邮箱注册', {
-           confirmButtonText: '注册',
-           cancelButtonText: '取消',
-           inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
-           inputErrorMessage: '邮箱格式不正确'
-         }).then(({value}) => {
-           this.$message({
-             type: 'success',
-             message: '请查看邮箱 '
-           });
-         })*/
-         this.$alert('<div style="height: 150px">' +
-           '<h2 style="width: 300px;height: 40px;float: left;margin-top: -25px;color: black">邮箱注册</h2>' +
-           '<div style="width: 300px;height: 40px;float: left;margin-top: -25px;color: #AAA;font-size: 14px">别担心，无账号自动注册不会导致手机号被泄露</div>' +
-           '<input  placeholder="请输入邮箱" style="width: 390px;height: 40px">' +
-           '<input  placeholder="请输入密码" type="password" style="width: 390px;height: 40px;margin-top: 2px">' +
-           '<div style="height: 30px;width: 300px">' +
-           '<button style="width: 390px;height: 40px;background-color: green;margin-top: 26px;">注册</button>' +
-
-           '</div>' +
-           '</input>' +
-           '</div>', {
-           dangerouslyUseHTMLString: true
-         });
-       }
-     }
    };
 </script>
 
@@ -627,5 +664,27 @@
     height: 100px;
     width: 100%;
   }
-
+  .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+  }
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
+  }
 </style>
