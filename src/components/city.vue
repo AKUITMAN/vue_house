@@ -1,7 +1,7 @@
 <template>
   <div class="vessel">
     <div class="firstVessel">
-      <a href="http://localhost:8080/#/" style="text-decoration: none;color: white"> <div class="rightImge"></div></a>
+      <a href="http://10.12.154.48:8080/#/" style="text-decoration: none;color: white"> <div class="rightImge"></div></a>
       <div style="margin-top: 22px;float: left;margin-left: 100px;width: 700px;">
         <el-input placeholder="请输入内容" v-model="input3" class="input-with-select">
          <!-- <el-button type="success">搜索</el-button>-->
@@ -18,22 +18,22 @@
     <div class="thirdlyVessel">
       <div style="float: left;font-size: 15px;height: 30px;width: 100px;margin-top:15px"><strong>城市选择</strong></div>
       <div class="change1">
-        <el-select v-model="value" placeholder="省份">
+        <el-select v-model="id" placeholder="省份">
           <el-option
             v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
+            :key="item.id"
+            :label="item.province"
+            :value="item.id">
           </el-option>
         </el-select>
       </div>
       <div class="change1">
-        <el-select v-model="valuel" placeholder="城市">
+        <el-select v-model="ids" placeholder="城市">
           <el-option
             v-for="item in optionsl"
-            :key="item.valuel"
-            :label="item.label"
-            :value="item.valuel">
+            :key="item.id"
+            :label="item.city"
+            :value="item.id">
           </el-option>
         </el-select>
       </div>
@@ -107,8 +107,6 @@
         </div>
         </div>
       </div>
-
-
       <div style="width: 100%;height: 360px;border-bottom: #888c8e 1px solid;">
         <div class="headly" style="height: 360px">
           <div style="margin-top: 170px;" ><strong>H</strong></div>
@@ -325,30 +323,19 @@
 
 </template>
 <script>
+  import axios from "axios"
   export default {
     data() {
       return {
         options: [{
-          value: '选项1',
-          label: '山西省'
-        }, {
-          value: '选项2',
-          label: '陕西省'
-        }, {
-          value: '选项3',
-          label: '北京'
-        }, {
-          value: '选项4',
-          label: '河北省'
-        }, {
-          value: '选项5',
-          label: '黑龙江'
+          id: '',
+          province: ''
         }],
-        value: '',
+        id: '',
         optionsl: [{
-          valuel: '选项1',
-          label: '西安'
-        }, {
+          id: '',
+          city: ''
+        }, /*{
           valuel: '选项2',
           label: '北京'
         }, {
@@ -360,10 +347,32 @@
         }, {
           valuel: '选项5',
           label: '重庆'
-        }],
-        valuel: '',
+        }*/],
+        ids: '',
         input3: ''
       }
+    },
+    methods:{
+      findAll:function () {
+        axios.get("http://10.12.154.50:7000/house-city/city/findAll").then(res=>{
+          if (res.data.code==200){
+              this.options=res.data.data;
+          }
+        })
+
+      },
+      findByPid:function () {
+        axios.get("http://10.12.154.50:7000/house-city/city/findByPid/"+this.options.id).then(res=>{
+          if (res.data.code==200){
+              this.options=res.data.data;
+          }
+        })
+
+      }
+    },
+    mounted() {
+      this.findAll();
+      this.findByPid();
     }
   }
 </script>
