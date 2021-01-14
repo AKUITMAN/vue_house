@@ -12,6 +12,7 @@ import delegation from '@/components/delegation'
 import searchlist from '@/components/searchlist'
 import myWenda from '@/components/myWenda'
 import client from '@/components/client'
+import VueAMap from "@/components/VueAMap";
 Vue.use(Router)
 export default new Router({
   routes: [
@@ -25,7 +26,11 @@ export default new Router({
       name: 'city',
       component: city
     },
-
+    {
+      path: '/VueAMap',
+      name: 'VueAMap',
+      component: VueAMap
+    },
     {
       path: '/MyHouse',
       name: 'MyHouse',
