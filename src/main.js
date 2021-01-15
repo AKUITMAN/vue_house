@@ -6,9 +6,11 @@ import router from './router'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import vueCookie from 'vue-cookie';
+import Chat from 'jwchat';
 Vue.config.productionTip = false
 Vue.use(ElementUI);
 Vue.use(vueCookie);
+Vue.use(Chat);
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
