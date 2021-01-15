@@ -18,24 +18,21 @@
     <div class="thirdlyVessel">
       <div style="float: left;font-size: 15px;height: 30px;width: 100px;margin-top:15px"><strong>城市选择</strong></div>
       <div class="change1">
-        <el-select v-model="id" placeholder="省份">
-          <el-option
-            v-for="item in options"
-            :key="item.id"
-            :label="item.province"
-            :value="item.id">
-          </el-option>
-        </el-select>
+        <el-autocomplete
+          v-model="state"
+          :fetch-suggestions="querySearchAsync"
+          placeholder="省份"
+          @select="handleSelect"
+        ></el-autocomplete>
       </div>
       <div class="change1">
-        <el-select v-model="ids" placeholder="城市">
-          <el-option
-            v-for="item in optionsl"
-            :key="item.id"
-            :label="item.city"
-            :value="item.id">
-          </el-option>
-        </el-select>
+
+        <el-autocomplete
+          v-model="state1"
+          :fetch-suggestions="querySearchAsync1"
+          placeholder="城市"
+          @select="handleSelect1"
+        ></el-autocomplete>
       </div>
     </div>
     <div class="fourVessel">
@@ -331,48 +328,86 @@
           id: '',
           province: ''
         }],
+        state1: '',
+        restaurants1:[],
+        restaurants:[],
+        provinceId:'',
+        state: '',
         id: '',
-        optionsl: [{
-          id: '',
-          city: ''
-        }, /*{
-          valuel: '选项2',
-          label: '北京'
-        }, {
-          valuel: '选项3',
-          label: '安康'
-        }, {
-          valuel: '选项4',
-          label: '哈尔滨'
-        }, {
-          valuel: '选项5',
-          label: '重庆'
-        }*/],
         ids: '',
         input3: ''
       }
     },
     methods:{
       findAll:function () {
-        axios.get("http://10.12.154.50:7000/house-city/city/findAll").then(res=>{
+        axios.get("http://10.12.154.186:7000/house-city/city/findByPid?pid="+this.provinceId).then(res=>{
+
           if (res.data.code==200){
-              this.options=res.data.data;
+            this.restaurants1=res.data.data;
+            this.state1 = this.restaurants1[0].address;
           }
         })
-
       },
-      findByPid:function () {
-        axios.get("http://10.12.154.50:7000/house-city/city/findByPid/"+this.options.id).then(res=>{
-          if (res.data.code==200){
-              this.options=res.data.data;
+
+      addressAll(){
+        axios.get("http://10.12.154.186:7000/house-province/province/provincefindAll").then(res => {
+          if (res.data.code == 200) {
+            this.restaurants=res.data.data;
+
           }
         })
+      },
+      querySearchAsync(queryString, cb) {
+        var restaurants = this.restaurants;
+        var results = queryString ? restaurants.filter(this.createStateFilter(queryString)) : restaurants;
+        console.log(results)
+        clearTimeout(this.timeout);
+        this.timeout = setTimeout(() => {
+          cb(results);
+        }, 3000 * Math.random());
+      }, createStateFilter(queryString) {
 
+        return (state) => {
+          return state.address;
+        };
+      },
+      querySearchAsync1(queryString1, cb) {
+        var restaurants1 = this.restaurants1;
+        var results = queryString1 ? restaurants1.filter(this.createStateFilter1(queryString1)) : restaurants1;
+        console.log(results)
+
+        clearTimeout(this.timeout);
+        this.timeout = setTimeout(() => {
+          cb(results);
+        }, 3000 * Math.random());
+      }, createStateFilter1(queryString1) {
+        return (state1) => {
+          return state1.address;
+        };
+      },
+      handleSelect(item) {
+        console.log(item);
+        this.provinceId=item.id;
+        this.findAll();
+
+        // alert(item.id);
+      },
+      handleSelect1(item) {
+        console.log(item);
       }
+
+      /*  findByPid:function () {
+          axios.get("http://10.12.154.50:7000/house-city/city/findByPid/"+this.options.id).then(res=>{
+            if (res.data.code==200){
+                this.options=res.data.data;
+            }
+          })
+
+        }*/
     },
     mounted() {
-      this.findAll();
-      this.findByPid();
+      this.addressAll();
+      /* this.findByPid();*/
     }
   }
 </script>
