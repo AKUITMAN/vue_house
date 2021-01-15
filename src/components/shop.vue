@@ -44,7 +44,7 @@
         <div class="banner-right">
           <div class="login">
             <i class="el-icon-s-custom"></i>
-            <a href="#" style="color: white">登录/</a>
+            <router-link to="/MyHouse" style="color: white">{{userName}}/</router-link>>
             <a href="#" style="color: white">注册</a>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <i class="el-icon-phone"></i>
@@ -372,6 +372,7 @@ export default {
 name: "shop",
   data() {
     return {
+      userName: '登录',
       addressList:'',
       src:'',
       input: '',
@@ -459,12 +460,22 @@ name: "shop",
         }
       })
 
+    },
+    getUser:function () {
+
+      //alert(this.$cookie.get("token"))
+      axios.get("http://localhost:7000/house-user/user/getUser?token="+this.$cookie.get("token")).then(res=>{
+        console.log(res);
+       this.userName=res.data.data.userName;
+        //alert(res.data.data.userName)
+      })
     }
 
   },
   mounted(){
   this.houseType();
   this.findAll();
+  this.getUser();
   }
 }
 </script>

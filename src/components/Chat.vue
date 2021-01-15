@@ -43,10 +43,11 @@
 
 <script>
 import axios from "axios";
-
 export default {
   data() {
     return {
+      /*token值*/
+      token:'',
       /*输入框的内容*/
       inputMsg: '',
       /*当前聊天记录的内容*/
@@ -146,7 +147,7 @@ export default {
       //登录人员
       config: {
         img: '',
-        name: '高升',
+        name: '',
         dept: '',
         callback: this.headerEvent
       },
@@ -163,7 +164,7 @@ export default {
     /*向后台发送*/
     sendMsg(msg){
       if (this.inputMsg!=null&&this.inputMsg!=""){
-        axios.get("http://localhost:8800/house-chat/sendMessage?message="+msg+"&sender="+this.config.name+"&addressee="+this.HeaderName.name).then(res=>{
+        axios.get("http://localhost:7000/house-chat/sendMessage?message="+msg+"&sender="+this.config.name+"&addressee="+this.HeaderName.name).then(res=>{
           alert(res.data);
         })
       }
@@ -201,22 +202,11 @@ export default {
     },
     /*连接信息*/
     connect:function (){
-      //从cookie中获取token的信息
-      // let took = this.$cookie.get("took");
-       var token;
-      //获取已经登录的用户信息
-      axios.get("localhost:8800/house-user/user/getUser").then(res=>{
-        //获取用户信息token
-        token=res.data;
-        console.log(token);
-      });
-      alert(token);
       var _this=this;
-      var userName=token.userName;
-      if (this.config.name!=null&&this.config.name!=""){
-        this.ws=new WebSocket("ws://localhost:8800/house-chat/socketServer/"+userName);
+      alert(_this.config.name);
+      if (_this.config.name!=''){
+        this.ws=new WebSocket("ws://localhost:8016/socketServer/"+_this.config.name);
         this.ws.onmessage=function (evt){
-
           var parse = JSON.parse(evt.data);
           console.log(parse);
             const msgObj = {
@@ -234,28 +224,38 @@ export default {
 
         };
         this.ws.onclose=function (evt){
-          _this.message({
+          _this.$message({
             type:'danger',
             message:'连接中断'
           });
         };
         this.ws.onopen=function (evt){
-          _this.message({
+          _this.$message({
             type:'success',
             message:'连接成功'
           });
         };
       }else{
-        _this.message({
+        _this.$message({
           type:'default',
           message:'请登录!!!'
         });
       }
+    },
+    getUser:function () {
+
+      //alert(this.$cookie.get("token"))
+      axios.get("http://localhost:7000/house-user/user/getUser?token="+this.$cookie.get("token")).then(res=>{
+        console.log(res);
+        this.config.name=res.data.data.userName;
+        //alert(res.data.data.userName)
+      })
     }
   },
   mounted() {
     this.taleList=this.leftConfig.list[0].tableList;
     this.HeaderName.name=this.leftConfig.list[0].name;
+    this.getUser();
   }
 }
 </script>

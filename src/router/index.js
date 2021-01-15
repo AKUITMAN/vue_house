@@ -15,6 +15,7 @@ import client from '@/components/client'
 import VueAMap from "@/components/VueAMap";
 import shop from "@/components/shop";
 import shopone from "@/components/shopone";
+import Chat from "@/components/Chat";
 Vue.use(Router)
 export default new Router({
   routes: [
@@ -93,7 +94,13 @@ export default new Router({
           name:'client',
           component:client
         },
+
       ]
+    },
+    {
+      path: '/chat',
+      name: 'chat',
+      component: Chat
     }
   ]
 })
