@@ -7,6 +7,7 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import vueCookie from 'vue-cookie';
 import VueAMap from 'vue-amap';
+import BaiduMap from 'vue-baidu-map';
 Vue.use(VueAMap)
 Vue.config.productionTip = false
 Vue.use(ElementUI);
@@ -17,6 +18,9 @@ VueAMap.initAMapApiLoader({
   v: '1.4.4',
   uiVersion: '1.0'
 });
+Vue.use(BaiduMap, {
+  ak: 'omkML7S4uOqtBeKiL18xh3lff2dXzN15'
+})
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

@@ -13,6 +13,8 @@ import searchlist from '@/components/searchlist'
 import myWenda from '@/components/myWenda'
 import client from '@/components/client'
 import VueAMap from "@/components/VueAMap";
+import shop from "@/components/shop";
+import shopone from "@/components/shopone";
 Vue.use(Router)
 export default new Router({
   routes: [
@@ -30,6 +32,16 @@ export default new Router({
       path: '/VueAMap',
       name: 'VueAMap',
       component: VueAMap
+    },
+    {
+      path: '/shop',
+      name: 'shop',
+      component: shop
+    },
+    {
+      path: '/shopone',
+      name: 'shopone',
+      component: shopone
     },
     {
       path: '/MyHouse',

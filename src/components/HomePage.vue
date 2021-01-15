@@ -334,7 +334,7 @@
              //将返回的token设置的前端的cookie中
              this.$cookie.set("token", res.data.data);
              //设置完成跳转首页
-             this.$router.push("/")
+             this.$router.push("/shop")
            }
            else{
              alert(res.data.message)
@@ -346,7 +346,7 @@
            if (res.data.code == 200) {
              alert(res.data.message)
              //将返回的token设置的前端的cookie中
-             this.$cookie.set("token", res.data.data);
+             //this.$cookie.set("token", res.data.data);
              //设置完成跳转首页
            }
            else {
@@ -389,6 +389,7 @@
      },
      mounted() {
        this.restaurants = this.loadAll();
+
      },
    };
 </script>
