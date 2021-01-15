@@ -122,15 +122,16 @@
         </div>
         <div class="card">
           <el-row>
-            <el-col :span="4" v-for="(o, index) in 4" :key="o" :offset="index > 0 ? 2 : 0">
+            <el-col :span="4" v-for="(o, index) in HouseList" :key="index" :offset="index > 0 ? 2 : 0">
               <el-card :body-style="{ padding: '0px' }">
-                <img src="../assets/img/1.jpg" class="image">
+                <!--<img :src="o.pic2" class="image">-->
+                <el-image :src="o.pic1" style="width:216px;height:170px"></el-image>
                 <div style="padding: 14px; float: left">
-                  <div style="float: left;width: 200px;font-size: 20px">雁塔高新六路</div>
-                  <div style="float: left;width: 200px;font-size: 20px">南窑国际</div>
+                  <div style="float: left;width: 200px;font-size: 20px">{{o.ahouse}}</div>
+                  <div style="float: left;width: 200px;font-size: 20px">{{o.aname}}</div>
                   <div class="bottom clearfix">
-                    <div style="float: left;color: #999999;font-size:12px ">四室一厅</div>
-                    <div style="color: red;float: right">161万</div>
+                    <div style="float: left;color: #999999;font-size:12px ">{{o.houseType}}</div>
+                    <div style="color: red;float: right">{{o.price}}元/每月</div>
                   </div>
                 </div>
               </el-card>
@@ -292,16 +293,18 @@
 
        return {
          imagesbox:[
-           {id:0,View:require("../assets/img/logo1.jpg")},
-           {id:1,View:require("../assets/img/logo2.jpg")},
-           {id:2,View:require("../assets/img/logo3.jpg")},
+           {View:require("../assets/img/logo1.jpg")},
+           {View:require("../assets/img/logo2.jpg")},
+           {View:require("../assets/img/logo3.jpg")},
          ],
          imagesboxl:[
-           {idl:0,View:require("../assets/img/logo4.png"),chotry:"美国·达拉斯",hosename:"美国-达拉斯-学府别墅",type:"3室/4室 192~213m²"},
-           {idl:1,View:require("../assets/img/logo5.png"),chotry:"英国·曼彻斯特",hosename:"凡雅都市",type:"1室/2室 51~76²"},
-           {idl:2,View:require("../assets/img/logo6.png"),chotry:"泰国·普吉岛",hosename:"普吉岛高级别墅",type:"1~3室 45~255m²"},
-           {idl:3,View:require("../assets/img/logo7.png"),chotry:"美国·奇诺岗",hosename:"洛杉矶-东谷-Prado",type:"2-4室 100~300m²"},
+           {View:require("../assets/img/logo4.png"),chotry:"美国·达拉斯",hosename:"美国-达拉斯-学府别墅",type:"3室/4室 192~213m²"},
+           {View:require("../assets/img/logo5.png"),chotry:"英国·曼彻斯特",hosename:"凡雅都市",type:"1室/2室 51~76²"},
+           {View:require("../assets/img/logo6.png"),chotry:"泰国·普吉岛",hosename:"普吉岛高级别墅",type:"1~3室 45~255m²"},
+           {View:require("../assets/img/logo7.png"),chotry:"美国·奇诺岗",hosename:"洛杉矶-东谷-Prado",type:"2-4室 100~300m²"},
 
+         ],
+         HouseList:[
          ],
 
            user:{
@@ -334,19 +337,33 @@
              //将返回的token设置的前端的cookie中
              this.$cookie.set("token", res.data.data);
              //设置完成跳转首页
-             this.$router.push("/shop")
+             this.$router.push("/")
            }
            else{
              alert(res.data.message)
            }
          })
        },
+       findAll: function () {
+
+         axios.get("http://10.12.154.186:7000/house-search/search/selectHouse?key="+"&check="+"&tariff="+"&page="+4+"&size="+4).then(res => {
+
+           if (res.data.code == 200) {
+
+             this.HouseList= res.data.data
+           }
+           else{
+             alert(res.data.message)
+           }
+         })
+       },
+
        registe: function () {
          axios.post("http://10.12.154.50:7000/house-user/user/registry", this.user).then(res => {
            if (res.data.code == 200) {
              alert(res.data.message)
              //将返回的token设置的前端的cookie中
-             //this.$cookie.set("token", res.data.data);
+             this.$cookie.set("token", res.data.data);
              //设置完成跳转首页
            }
            else {
@@ -389,7 +406,7 @@
      },
      mounted() {
        this.restaurants = this.loadAll();
-
+       this.findAll();
      },
    };
 </script>
