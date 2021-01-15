@@ -12,6 +12,7 @@
   "dependencies": {
     "axios": "^0.21.1",
     "element-ui": "^2.14.1",
+    "jwchat": "^0.2.48",
     "vue": "^2.5.2",
     "vue-amap": "^0.5.10",
     "vue-baidu-map": "^0.21.22",

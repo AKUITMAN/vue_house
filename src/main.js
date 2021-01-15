@@ -6,21 +6,11 @@ import router from './router'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import vueCookie from 'vue-cookie';
-import VueAMap from 'vue-amap';
-import BaiduMap from 'vue-baidu-map';
-Vue.use(VueAMap)
+import Chat from 'jwchat';
 Vue.config.productionTip = false
 Vue.use(ElementUI);
 Vue.use(vueCookie);
-VueAMap.initAMapApiLoader({
-  key: '32f1324b2c5ef583e67377b8c54927a7',
-  plugin: ['AMap.Scale', 'AMap.OverView', 'AMap.ToolBar', 'AMap.MapType', 'AMap.PlaceSearch', 'AMap.Geolocation', 'AMap.Geocoder'],
-  v: '1.4.4',
-  uiVersion: '1.0'
-});
-Vue.use(BaiduMap, {
-  ak: 'omkML7S4uOqtBeKiL18xh3lff2dXzN15'
-})
+Vue.use(Chat);
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
